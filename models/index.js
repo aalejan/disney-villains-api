@@ -8,6 +8,6 @@ const connection = new Sequelize('disneyCharacters',
     host: 'localhost', dialect: 'mysql'
   })
 
-const teams = teamsModel(connection, Sequelize)
+const villains = villainsModel(connection, Sequelize)
 
-module.exports = {villainsModel }
+module.exports = { villains }
