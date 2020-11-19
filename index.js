@@ -13,6 +13,6 @@ app.use(bodyParser.json())
 
 app.post(bodyParser.json(), saveNewVillain)
 
-app.listen(7000, () => {
-  console.log('Listening on port 7000...')
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`)
 })
