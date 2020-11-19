@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const port = 7000
 const { getAllVillains, getVillainBySlug, saveNewVillain } = require('./controllers/villains')
 
 
