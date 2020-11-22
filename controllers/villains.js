@@ -1,6 +1,5 @@
 const models = require('../models')
 
-
 const getAllVillains = async (req, res) => {
   const villains = await models.villains.findAll()
 
@@ -26,9 +25,5 @@ const saveNewVillain = async (req, res) => {
 
   return res.status(201).send(newVillain)
 }
-
-
-
-
 
 module.exports = { getAllVillains, getVillainBySlug, saveNewVillain }

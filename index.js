@@ -13,6 +13,10 @@ app.use(bodyParser.json())
 
 app.post(bodyParser.json(), saveNewVillain)
 
+app.all('*', (req, res) => {
+  return res.send('Villain was not found, incorrect slug or route does not exist.')
+})
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}`)
 })
