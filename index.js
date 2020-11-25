@@ -4,7 +4,6 @@ const bodyParser = require('body-parser')
 const port = 7000
 const { getAllVillains, getVillainBySlug, saveNewVillain } = require('./controllers/villains')
 
-
 app.get('/villains', getAllVillains)
 
 app.get('/villains/:slug', getVillainBySlug)
