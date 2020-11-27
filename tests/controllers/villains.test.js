@@ -23,4 +23,8 @@ describe('Controllers- villains', () => {
       expect(stubbedSend).to.have.been.calledWith(villainsList)
     })
   })
+  describe('get villainBySlug', () => {
+      it('')
+  })
+
 })
