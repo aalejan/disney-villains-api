@@ -38,4 +38,11 @@ describe('Controllers- villains', () => {
       expect(stubbedSend).to.have.been.calledWith(singleVillain)
     })
   })
+
+  describe('saveNewVillain', () => {
+    // eslint-disable-next-line max-len
+    it('accepts new villain and saves them as a new villain, returning the saved record with a 201 status', async () => {
+        
+    })
+  })
 })
