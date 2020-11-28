@@ -3,7 +3,7 @@ const sinon = require('sinon')
 const models = require('../../models')
 const { villainsList, singleVillain, createVillain, createVillainResponse } = require('../mocks/villains')
 const sinonChai = require('sinon-chai')
-const { describe, it } = require('mocha')
+const { describe, it, before, afterEach } = require('mocha')
 const { getAllVillains, getVillainBySlug, saveNewVillain } = require('../../controllers/villains')
 
 
@@ -12,6 +12,16 @@ const { expect } = chai
 
 
 describe('Controllers- villains', () => {
+  let stubbedFindOne
+
+  before(() => {
+    stubbedFindOne = sinon.stub(models.villains, 'findOne')
+  })
+
+  afterEach(() => {
+    stubbedFindOne.resetBehavior()
+  })
+
   describe('getAllVillains', () => {
     it('retrieves a list of villains from the database and calls response.send() with the list', async () => {
       const stubbedFindAll = sinon.stub(models.villains, 'findAll').returns(villainsList)
@@ -37,6 +47,19 @@ describe('Controllers- villains', () => {
       expect(stubbedFindOne).to.have.been.calledWith({ where: { slug: 'hades' } })
       expect(stubbedSend).to.have.been.calledWith(singleVillain)
     })
+    it('returns a 404 when no villain is found', async () => {
+      const request = { params: { slug: 'not found' } }
+      const stubbedSendStatus = sinon.stub()
+      const response = { stubbedSendStatus: stubbedSendStatus }
+
+      stubbedFindOne = sinon.stub(models.villains).returns(null)
+
+      await getVillainBySlug(request, response)
+
+      expect(stubbedFindOne).to.have.been.calledWith({ where: { slug: 'not found' } })
+
+      expect(stubbedSendStatus).have.been.calledWith(404)
+    })
   })
 
   describe('saveNewVillain', () => {
@@ -46,7 +69,7 @@ describe('Controllers- villains', () => {
       const stubbedSend = sinon.stub()
       const stubbedStatus = sinon.stub().returns({ send: stubbedSend })
       const response = { status: stubbedStatus }
-      const stubbedCreate = sinon.stub(models, 'create').returns(createVillainResponse)
+      const stubbedCreate = sinon.stub(models.villains, 'create').returns(createVillainResponse)
 
       await saveNewVillain(request, response)
 
@@ -60,7 +83,7 @@ describe('Controllers- villains', () => {
       const stubbedStatus = sinon.stub().returns({ send: stubbedSend })
       const response = { status: stubbedStatus }
       // eslint-disable-next-line max-len
-      const stubbedCreate = sinon.stub(models.villains, 'create').returns('The following fields are required: name, movie, slug')
+      const stubbedCreate = sinon.stub(models.villains, 'create').returns(null)
 
       await saveNewVillain(request, response)
 
