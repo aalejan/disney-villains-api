@@ -77,16 +77,27 @@ describe('Controllers- villains', () => {
     })
     it('returns a 404 when no villain is found', async () => {
       const request = { params: { slug: 'not found' } }
-      const stubbedSendStatus = sinon.stub()
-      const response = { stubbedSendStatus: stubbedSendStatus }
 
-      stubbedFindOne = sinon.stub(models.villains).returns(null)
+      stubbedFindOne.returns(null)
+
+
 
       await getVillainBySlug(request, response)
 
       expect(stubbedFindOne).to.have.been.calledWith({ where: { slug: 'not found' } })
 
       expect(stubbedSendStatus).have.been.calledWith(404)
+    })
+
+    it('returns a 500 with an error message when the database call throws an error', async () => {
+      stubbedFindOne.throws('ERROR!')
+      const request = { params: { slug: 'throw-error' } }
+
+      await getVillainBySlug(request, response)
+
+      expect(stubbedFindOne).to.have.been.calledWith({ where: { slug: 'throw-error' } })
+      expect(stubbedStatus).to.have.been.calledWith(500)
+      expect(stubbedStatusSend).to.have.been.calledWith('unable to retrieve villain, please try again')
     })
   })
 
