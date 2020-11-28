@@ -13,13 +13,33 @@ const { expect } = chai
 
 describe('Controllers- villains', () => {
   let stubbedFindOne
+  let stubbedSend
+  let response
+  let stubbedSendStatus
+  let stubbedStatusSend
+  let stubbedStatus
 
   before(() => {
     stubbedFindOne = sinon.stub(models.villains, 'findOne')
+
+    stubbedSend = sinon.stub()
+    stubbedSendStatus = sinon.stub()
+    stubbedStatusSend = sinon.stub()
+    stubbedStatus = sinon.stub()
+
+    response = {
+      send: stubbedSend,
+      sendStatus: stubbedSendStatus,
+      status: stubbedStatus,
+    }
   })
 
   afterEach(() => {
     stubbedFindOne.resetBehavior()
+    stubbedSend.resetBehavior()
+    stubbedSendStatus.resetBehavior()
+    stubbedStatusSend.resetBehavior()
+    stubbedStatus.resetBehavior()
   })
 
   describe('getAllVillains', () => {
