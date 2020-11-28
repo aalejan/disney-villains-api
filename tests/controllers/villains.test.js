@@ -1,9 +1,12 @@
 const chai = require('chai')
+const { createSandbox } = require('sinon')
 const sinon = require('sinon')
 const models = require('../../models')
 const { villainsList, singleVillain, createVillain, createVillainResponse } = require('../mocks/villains')
 const sinonChai = require('sinon-chai')
-const { describe, it, before, afterEach } = require('mocha')
+const {
+  describe, it, before, afterEach, beforeEach, after
+} = require('mocha')
 const { getAllVillains, getVillainBySlug, saveNewVillain } = require('../../controllers/villains')
 
 
@@ -12,20 +15,26 @@ const { expect } = chai
 
 
 describe('Controllers- villains', () => {
+  let sandbox
   let stubbedFindOne
   let stubbedSend
   let response
   let stubbedSendStatus
   let stubbedStatusSend
   let stubbedStatus
+  let stubbedFindAll
+  let stubbedCreate
 
   before(() => {
-    stubbedFindOne = sinon.stub(models.villains, 'findOne')
+    sandbox = createSandbox()
 
-    stubbedSend = sinon.stub()
-    stubbedSendStatus = sinon.stub()
-    stubbedStatusSend = sinon.stub()
-    stubbedStatus = sinon.stub()
+    stubbedFindOne = sandbox.stub(models.villains, 'findOne')
+    stubbedFindAll = sandbox.stub(models.villains, 'findAll')
+    stubbedCreate - sandbox.stub(models.villains, 'create')
+    stubbedSend = sandbox.stub()
+    stubbedSendStatus = sandbox.stub()
+    stubbedStatusSend = sandbox.stub()
+    stubbedStatus = sandbox.stub()
 
     response = {
       send: stubbedSend,
@@ -34,19 +43,20 @@ describe('Controllers- villains', () => {
     }
   })
 
-  afterEach(() => {
-    stubbedFindOne.resetBehavior()
-    stubbedSend.resetBehavior()
-    stubbedSendStatus.resetBehavior()
-    stubbedStatusSend.resetBehavior()
-    stubbedStatus.resetBehavior()
+  beforeEach(() => {
+    stubbedStatus.returns({ send: stubbedStatusSend })
   })
 
+  afterEach(() => {
+    sandbox.reset()
+  })
+
+  after(() => {
+    sandbox.restore()
+  })
   describe('getAllVillains', () => {
     it('retrieves a list of villains from the database and calls response.send() with the list', async () => {
-      const stubbedFindAll = sinon.stub(models.villains, 'findAll').returns(villainsList)
-      const stubbedSend = sinon.stub()
-      const response = { send: stubbedSend }
+      stubbedFindAll.returns(villainsList)
 
       await getAllVillains({}, response)
 
@@ -57,10 +67,8 @@ describe('Controllers- villains', () => {
   describe('getVillainBySlug', () => {
     // eslint-disable-next-line max-len
     it('retrieves the villain associated with the provided slug from the DB and calls response.send with it', async () => {
+      stubbedFindOne.returns(singleVillain)
       const request = { params: { slug: 'hades' } }
-      const stubbedSend = sinon.stub()
-      const response = { send: stubbedSend }
-      const stubbedFindOne = sinon.stub(models.villains, 'findOne').returns(singleVillain)
 
       await getVillainBySlug(request, response)
 
