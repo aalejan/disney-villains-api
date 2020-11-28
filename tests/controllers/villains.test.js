@@ -46,13 +46,27 @@ describe('Controllers- villains', () => {
       const stubbedSend = sinon.stub()
       const stubbedStatus = sinon.stub().returns({ send: stubbedSend })
       const response = { status: stubbedStatus }
-      const stubbedCreate = sinon.stub(models.villains, 'create').returns(createVillainResponse)
+      const stubbedCreate = sinon.stub(models, 'create').returns(createVillainResponse)
 
       await saveNewVillain(request, response)
 
       expect(stubbedCreate).to.have.been.calledWith(createVillain)
       expect(stubbedStatus).to.have.been.calledWith(201)
       expect(stubbedSend).to.have.been.calledWith(createVillainResponse)
+    })
+    it('sends 400 status and error message when required data is not given', async () => {
+      const request = { body: { name: createVillain.name, slug: createVillain.slug } }
+      const stubbedSend = sinon.stub()
+      const stubbedStatus = sinon.stub().returns({ send: stubbedSend })
+      const response = { status: stubbedStatus }
+      // eslint-disable-next-line max-len
+      const stubbedCreate = sinon.stub(models.villains, 'create').returns('The following fields are required: name, movie, slug')
+
+      await saveNewVillain(request, response)
+
+      expect(stubbedCreate).to.have.callCount(0)
+      expect(stubbedStatus).to.have.been.calledWith(400)
+      expect(stubbedSend).to.have.been.calledWith('The following fields are required: name, movie, slug')
     })
   })
 })
