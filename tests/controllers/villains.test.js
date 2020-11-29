@@ -30,7 +30,7 @@ describe('Controllers- villains', () => {
 
     stubbedFindOne = sandbox.stub(models.villains, 'findOne')
     stubbedFindAll = sandbox.stub(models.villains, 'findAll')
-    stubbedCreate - sandbox.stub(models.villains, 'create')
+    stubbedCreate = sandbox.stub(models.villains, 'create')
     stubbedSend = sandbox.stub()
     stubbedSendStatus = sandbox.stub()
     stubbedStatusSend = sandbox.stub()
@@ -105,24 +105,17 @@ describe('Controllers- villains', () => {
     // eslint-disable-next-line max-len
     it('accepts new villain and saves them as a new villain, returning the saved record with a 201 status', async () => {
       const request = { body: createVillain }
-      const stubbedSend = sinon.stub()
-      const stubbedStatus = sinon.stub().returns({ send: stubbedSend })
-      const response = { status: stubbedStatus }
-      const stubbedCreate = sinon.stub(models.villains, 'create').returns(createVillainResponse)
+
+      stubbedCreate.returns(createVillainResponse)
 
       await saveNewVillain(request, response)
 
       expect(stubbedCreate).to.have.been.calledWith(createVillain)
       expect(stubbedStatus).to.have.been.calledWith(201)
-      expect(stubbedSend).to.have.been.calledWith(createVillainResponse)
+      expect(stubbedStatusSend).to.have.been.calledWith(createVillainResponse)
     })
     it('sends 400 status and error message when required data is not given', async () => {
-      const request = { body: { name: createVillain.name, slug: createVillain.slug } }
-      const stubbedSend = sinon.stub()
-      const stubbedStatus = sinon.stub().returns({ send: stubbedSend })
-      const response = { status: stubbedStatus }
-      // eslint-disable-next-line max-len
-      const stubbedCreate = sinon.stub(models.villains, 'create').returns(null)
+      const request = { body: { name: createVillainResponse.name, slug: createVillainResponse.slug } }
 
       await saveNewVillain(request, response)
 
