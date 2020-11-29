@@ -121,7 +121,7 @@ describe('Controllers- villains', () => {
 
       expect(stubbedCreate).to.have.callCount(0)
       expect(stubbedStatus).to.have.been.calledWith(400)
-      expect(stubbedSend).to.have.been.calledWith('The following fields are required: name, movie, slug')
+      expect(stubbedStatusSend).to.have.been.calledWith('The following fields are required: name, movie, slug')
     })
   })
 })
