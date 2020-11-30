@@ -123,5 +123,15 @@ describe('Controllers- villains', () => {
       expect(stubbedStatus).to.have.been.calledWith(400)
       expect(stubbedStatusSend).to.have.been.calledWith('The following fields are required: name, movie, slug')
     })
+    it('sends 500 status when server is unable to fulfil request', async () => {
+      stubbedCreate.throws('error')
+      const request = { body: createVillain }
+
+      await saveNewVillain(request, response)
+
+      expect(stubbedCreate).to.have.been.calledWith(createVillain)
+      expect(stubbedStatus).to.have.been.calledWith(500)
+      expect(stubbedStatusSend).to.have.been.calledWith('unable to create villain, please try again')
+    })
   })
 })
